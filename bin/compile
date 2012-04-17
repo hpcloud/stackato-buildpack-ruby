@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+# fail fast
+set -e
+
+# parse args
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+# use the latest ruby (1.9) in stackato
+export PATH=/opt/rubies/current:$PATH
+
+DB_YML_SCRIPT="$(dirname $0)/../opt/write_database_yml.rb"
+
+function bundle_install {
+    unset RUBYOPT BUNDLE_BIN_PATH GEM_PATH GEM_HOME BUNDLE_GEMFILE
+    bundle install --path   rubygems 
+}
+
+function write_database_yml {
+    ruby $DB_YML_SCRIPT
+}
+
+function db_migrate {
+    rake db:migrate
+}
+
+bundle_install
+write_database_yml
+db_migrate
