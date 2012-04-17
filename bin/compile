@@ -26,7 +26,7 @@ function puts-step (){
 
 function bundle_install {
     unset RUBYOPT BUNDLE_BIN_PATH GEM_PATH GEM_HOME BUNDLE_GEMFILE
-    puts-step "Installing GEM dependencies"
+    puts-step "Installing gem dependencies"
     bundle install --path rubygems | indent
 }
 
@@ -37,10 +37,18 @@ function write_database_yml {
 
 function db_migrate {
     puts-step "Running rake db:migrate"
-    bundle exec rake db:migrate | indent
+    bundle exec rake db:migrate --trace | indent
+}
+
+function create_asset_plugin {
+    puts-step "Enabling static assets plugin"
+    PLUGIN_DIR=$BUILD_DIR/vendor/plugins/serve_static_assets
+    mkdir -p $PLUGIN_DIR
+    echo "Rails.application.config.serve_static_assets = true" > $PLUGIN_DIR/init.rb
 }
 
 cd $BUILD_DIR
 bundle_install
 write_database_yml
 db_migrate
+create_asset_plugin
