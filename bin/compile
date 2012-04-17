@@ -4,22 +4,23 @@
 # fail fast
 set -e
 
-# parse args
+
+# Paths.
+BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
+ROOT_DIR=$(dirname $BIN_DIR)
 BUILD_DIR=$1
 CACHE_DIR=$2
 
 # use the latest ruby (1.9) in stackato
-export PATH=/opt/rubies/current:$PATH
-
-DB_YML_SCRIPT="$(dirname $0)/../opt/write_database_yml.rb"
+export PATH=/opt/rubies/current/bin:$PATH
 
 function bundle_install {
     unset RUBYOPT BUNDLE_BIN_PATH GEM_PATH GEM_HOME BUNDLE_GEMFILE
-    bundle install --path   rubygems 
+    bundle install --path rubygems 
 }
 
 function write_database_yml {
-    ruby $DB_YML_SCRIPT
+    ruby "$ROOT_DIR/opt/write_database_yml.rb"
 }
 
 function db_migrate {
