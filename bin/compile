@@ -14,17 +14,30 @@ CACHE_DIR=$2
 # use the latest ruby (1.9) in stackato
 export PATH=/opt/rubies/current/bin:$PATH
 
+# Syntax sugar.
+indent() {
+  RE="s/^/       /"
+  [ $(uname) == "Darwin" ] && sed -l "$RE" || sed -u "$RE"
+}
+
+function puts-step (){
+  echo "-----> $@"
+}
+
 function bundle_install {
     unset RUBYOPT BUNDLE_BIN_PATH GEM_PATH GEM_HOME BUNDLE_GEMFILE
-    bundle install --path rubygems 
+    puts-step "Installing GEM dependencies"
+    bundle install --path rubygems | indent
 }
 
 function write_database_yml {
-    ruby "$ROOT_DIR/opt/write_database_yml.rb"
+    puts-step "Writing database.yml"
+    ruby "$ROOT_DIR/opt/write_database_yml.rb" | indent
 }
 
 function db_migrate {
-    rake db:migrate
+    puts-step "Running rake db:migrate"
+    bundle exec rake db:migrate | indent
 }
 
 cd $BUILD_DIR
