@@ -14,6 +14,10 @@ CACHE_DIR=$2
 # use the latest ruby (1.9) in stackato
 export PATH=/opt/rubies/current/bin:$PATH
 
+CACHED_DIRS="rubygems"
+
+mkdir -p $CACHE_DIR
+
 # Syntax sugar.
 indent() {
   RE="s/^/       /"
@@ -27,7 +31,7 @@ function puts-step (){
 function bundle_install {
     unset RUBYOPT BUNDLE_BIN_PATH GEM_PATH GEM_HOME BUNDLE_GEMFILE
     puts-step "Installing gem dependencies"
-    bundle install --path rubygems | indent
+    bundle install --path rubygems 2>&1 | indent
 }
 
 function write_database_yml {
@@ -37,7 +41,7 @@ function write_database_yml {
 
 function db_migrate {
     puts-step "Running rake db:migrate"
-    bundle exec rake db:migrate --trace | indent
+    bundle exec rake db:migrate --trace 2>&1 | indent
 }
 
 function create_asset_plugin {
@@ -47,8 +51,24 @@ function create_asset_plugin {
     echo "Rails.application.config.serve_static_assets = true" > $PLUGIN_DIR/init.rb
 }
 
+
 cd $BUILD_DIR
+
+
+# Restore old artifacts from the cache.
+for dir in $CACHED_DIRS; do
+  cp -R $CACHE_DIR/$dir . &> /dev/null || true
+done
+
+
 bundle_install
 write_database_yml
 db_migrate
 create_asset_plugin
+
+
+# Store new artifacts in cache.
+for dir in $CACHED_DIRS; do
+  rm -rf $CACHE_DIR/$dir
+  cp -R $dir $CACHE_DIR/
+done
