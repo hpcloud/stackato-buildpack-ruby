@@ -26,6 +26,7 @@ function db_migrate {
     rake db:migrate
 }
 
+cd $BUILD_DIR
 bundle_install
 write_database_yml
 db_migrate
