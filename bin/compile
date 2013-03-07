@@ -46,7 +46,7 @@ function db_migrate {
 
 function create_asset_plugin {
     puts-step "Enabling static assets plugin"
-    PLUGIN_DIR=$BUILD_DIR/vendor/plugins/serve_static_assets
+    PLUGIN_DIR=$BUILD_DIR/plugins/serve_static_assets
     mkdir -p $PLUGIN_DIR
     echo "Rails.application.config.serve_static_assets = true" > $PLUGIN_DIR/init.rb
 }
