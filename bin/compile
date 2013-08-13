@@ -39,6 +39,11 @@ function write_database_yml {
     ruby "$ROOT_DIR/opt/write_database_yml.rb" | indent
 }
 
+function write_boot_config {
+    puts-step "Writing config/boot.rb"
+    ruby "$ROOT_DIR/opt/write_boot_config.rb" | indent
+}
+
 function db_migrate {
     puts-step "Running rake db:migrate"
     bundle exec rake db:migrate --trace 2>&1 | indent
@@ -63,6 +68,7 @@ done
 
 bundle_install
 write_database_yml
+write_boot_config
 db_migrate
 create_asset_plugin
 
