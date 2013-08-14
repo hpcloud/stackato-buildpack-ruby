@@ -8,7 +8,7 @@ NAME=$($BIN_DIR/detect $BUILD_DIR) || exit 1
 cat <<EOF
 ---
 config_vars:
-  PATH: /opt/rubies/current/bin
+  PATH: /opt/rubies/current/bin:$PATH
 EOF
 
 
