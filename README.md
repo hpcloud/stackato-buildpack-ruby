@@ -1,3 +1,5 @@
+_DEPRECATED_
+
 # Ruby buildpack for use in Stackato
 
 A simple ruby [buildpack](http://docs.stackato.com/deploy/buildpack.html) to deploy Rails app in Stackato. Simply runs
